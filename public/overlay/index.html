@@ -2,439 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lower Third Overlay</title>
 <script src="/socket.io/socket.io.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&family=Rajdhani:wght@500;700&family=Playfair+Display:wght@700&family=Montserrat:wght@400;700;900&family=Source+Sans+3:wght@400;600&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:1920px; height:1080px; background:transparent; overflow:hidden; font-family:'Barlow',sans-serif; }
 
-html, body {
-  width: 1920px; height: 1080px;
-  background: transparent;
-  overflow: hidden;
-  font-family: 'Barlow', sans-serif;
-}
+/* ─── WRAPPER ─── */
+#lt-wrapper { position:absolute; bottom:80px; left:0; width:100%; pointer-events:none; }
 
-/* ─── LOWER THIRD WRAPPER ─── */
-#lt-wrapper {
-  position: absolute;
-  bottom: 80px; left: 0;
-  width: 100%;
-  pointer-events: none;
-}
+/* ══════════════ THEMES ══════════════ */
 
-/* ═══════════════════════════════════════
-   THEME: BROADCAST (Classic News)
-═══════════════════════════════════════ */
-.theme-broadcast .lt-box {
-  position: relative;
-  display: inline-flex;
-  align-items: stretch;
-  min-width: 600px;
-  max-width: 900px;
-  margin-left: 80px;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-}
-.theme-broadcast .lt-accent {
-  width: 8px;
-  background: var(--accent, #e63946);
+/* BROADCAST */
+.theme-broadcast .lt-box { position:relative; display:inline-flex; align-items:stretch; min-width:600px; max-width:900px; margin-left:80px; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,0.5); }
+.theme-broadcast .lt-accent { width:8px; background:var(--accent,#e63946); flex-shrink:0; }
+.theme-broadcast .lt-content { background:rgba(10,10,20,0.92); padding:16px 28px 16px 20px; display:flex; flex-direction:column; gap:4px; backdrop-filter:blur(4px); }
+.theme-broadcast .lt-title { font-family:'Barlow',sans-serif; font-weight:700; font-size:32px; color:#fff; letter-spacing:.5px; line-height:1; }
+.theme-broadcast .lt-subtitle { font-family:'Barlow',sans-serif; font-weight:400; font-size:18px; color:rgba(255,255,255,.7); letter-spacing:1px; text-transform:uppercase; }
+.theme-broadcast .lt-tag { position:absolute; top:0; right:0; background:var(--accent,#e63946); color:#fff; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:4px 10px; }
+
+/* SPORT */
+.theme-sport .lt-box { position:relative; display:inline-flex; flex-direction:column; margin-left:80px; overflow:hidden; clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px)); }
+.theme-sport .lt-top-bar { background:var(--accent,#f5a623); padding:6px 24px; }
+.theme-sport .lt-tag { font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#000; }
+.theme-sport .lt-content { background:rgba(0,0,0,.9); padding:12px 28px 14px; display:flex; flex-direction:column; gap:2px; }
+.theme-sport .lt-title { font-family:'Oswald',sans-serif; font-weight:700; font-size:38px; color:#fff; letter-spacing:1px; text-transform:uppercase; line-height:1; }
+.theme-sport .lt-subtitle { font-family:'Barlow',sans-serif; font-weight:600; font-size:16px; color:var(--accent,#f5a623); letter-spacing:2px; text-transform:uppercase; }
+
+/* ELEGANT */
+.theme-elegant .lt-box { position:relative; margin-left:80px; display:inline-flex; flex-direction:column; background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(240,240,245,.97)); box-shadow:0 12px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.8); overflow:hidden; min-width:500px; }
+.theme-elegant .lt-border-top { height:3px; background:linear-gradient(90deg,var(--accent,#1a1a2e),transparent); }
+.theme-elegant .lt-content { padding:18px 32px 16px; display:flex; flex-direction:column; gap:5px; }
+.theme-elegant .lt-title { font-family:'Playfair Display',serif; font-weight:700; font-size:30px; color:#1a1a2e; letter-spacing:-.5px; line-height:1; }
+.theme-elegant .lt-subtitle { font-family:'Barlow',sans-serif; font-weight:400; font-size:14px; color:#666; letter-spacing:3px; text-transform:uppercase; }
+.theme-elegant .lt-tag { position:absolute; bottom:0; left:32px; background:var(--accent,#1a1a2e); color:#fff; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:3px 12px; }
+
+/* TECH */
+.theme-tech .lt-box { position:relative; margin-left:80px; display:inline-block; min-width:580px; border:1px solid var(--accent,#00f5ff); background:rgba(0,10,20,.88); box-shadow:0 0 30px rgba(0,245,255,.15),inset 0 0 30px rgba(0,245,255,.03); overflow:hidden; }
+.theme-tech .lt-scanline { position:absolute; top:0; left:0; right:0; bottom:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,255,.02) 2px,rgba(0,245,255,.02) 4px); pointer-events:none; }
+.theme-tech .lt-corner { position:absolute; width:12px; height:12px; border-color:var(--accent,#00f5ff); border-style:solid; }
+.theme-tech .lt-corner.tl { top:-1px; left:-1px; border-width:2px 0 0 2px; }
+.theme-tech .lt-corner.tr { top:-1px; right:-1px; border-width:2px 2px 0 0; }
+.theme-tech .lt-corner.bl { bottom:-1px; left:-1px; border-width:0 0 2px 2px; }
+.theme-tech .lt-corner.br { bottom:-1px; right:-1px; border-width:0 2px 2px 0; }
+.theme-tech .lt-content { padding:16px 24px; display:flex; flex-direction:column; gap:4px; }
+.theme-tech .lt-tag { font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:500; letter-spacing:4px; color:var(--accent,#00f5ff); text-transform:uppercase; margin-bottom:2px; }
+.theme-tech .lt-title { font-family:'Rajdhani',sans-serif; font-weight:700; font-size:34px; color:#fff; letter-spacing:2px; text-transform:uppercase; line-height:1; }
+.theme-tech .lt-subtitle { font-family:'Rajdhani',sans-serif; font-weight:500; font-size:16px; color:var(--accent,#00f5ff); letter-spacing:2px; opacity:.8; }
+
+/* MINIMAL */
+.theme-minimal .lt-box { position:relative; margin-left:80px; display:inline-flex; align-items:stretch; overflow:hidden; }
+.theme-minimal .lt-line { width:4px; background:var(--accent,#e63946); margin-right:20px; }
+.theme-minimal .lt-content { display:flex; flex-direction:column; gap:4px; padding:8px 0; }
+.theme-minimal .lt-title { font-family:'Montserrat',sans-serif; font-weight:900; font-size:36px; color:#fff; letter-spacing:-1px; line-height:1; text-shadow:0 2px 20px rgba(0,0,0,.8); }
+.theme-minimal .lt-subtitle { font-family:'Montserrat',sans-serif; font-weight:400; font-size:16px; color:rgba(255,255,255,.85); letter-spacing:2px; text-transform:uppercase; text-shadow:0 2px 10px rgba(0,0,0,.8); }
+
+/* GRADIENT */
+.theme-gradient .lt-box { position:relative; margin-left:80px; display:inline-flex; flex-direction:column; overflow:hidden; border-radius:4px; box-shadow:0 10px 50px rgba(0,0,0,.4); }
+.theme-gradient .lt-grad-bar { height:5px; background:linear-gradient(90deg,var(--accent,#667eea),#764ba2,#f093fb); }
+.theme-gradient .lt-content { background:rgba(10,10,20,.92); padding:14px 28px; display:flex; flex-direction:column; gap:4px; backdrop-filter:blur(8px); }
+.theme-gradient .lt-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:32px; color:#fff; line-height:1; }
+.theme-gradient .lt-subtitle { font-family:'Source Sans 3',sans-serif; font-size:16px; color:rgba(255,255,255,.65); letter-spacing:1px; }
+
+/* ══════════ LOGO OVERLAY ══════════ */
+.lt-logo {
+  width: 52px; height: 52px;
+  object-fit: contain;
+  border-radius: 6px;
   flex-shrink: 0;
+  margin-right: 14px;
+  align-self: center;
 }
-.theme-broadcast .lt-content {
-  background: rgba(10,10,20,0.92);
-  padding: 16px 28px 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  backdrop-filter: blur(4px);
-}
-.theme-broadcast .lt-title {
-  font-family: 'Barlow', sans-serif;
-  font-weight: 700;
-  font-size: 32px;
-  color: #fff;
-  letter-spacing: 0.5px;
-  line-height: 1;
-}
-.theme-broadcast .lt-subtitle {
-  font-family: 'Barlow', sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.theme-broadcast .lt-tag {
+.lt-has-logo { flex-direction:row !important; align-items:center; }
+
+/* ══════════ COUNTDOWN ══════════ */
+#countdown-wrapper {
   position: absolute;
-  top: 0; right: 0;
-  background: var(--accent, #e63946);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 4px 10px;
-}
-
-/* ═══════════════════════════════════════
-   THEME: SPORT (Bold Athletic)
-═══════════════════════════════════════ */
-.theme-sport .lt-box {
-  position: relative;
-  display: inline-flex;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
   flex-direction: column;
-  margin-left: 80px;
-  overflow: hidden;
-  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-}
-.theme-sport .lt-top-bar {
-  background: var(--accent, #f5a623);
-  padding: 6px 24px;
-}
-.theme-sport .lt-tag {
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #000;
-}
-.theme-sport .lt-content {
-  background: rgba(0,0,0,0.9);
-  padding: 12px 28px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.theme-sport .lt-title {
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 38px;
-  color: #fff;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.theme-sport .lt-subtitle {
-  font-family: 'Barlow', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--accent, #f5a623);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-/* ═══════════════════════════════════════
-   THEME: ELEGANT (Corporate/Luxury)
-═══════════════════════════════════════ */
-.theme-elegant .lt-box {
-  position: relative;
-  margin-left: 80px;
-  display: inline-flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(240,240,245,0.97) 100%);
-  box-shadow: 0 12px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.8);
-  overflow: hidden;
-  min-width: 500px;
-}
-.theme-elegant .lt-border-top {
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent, #1a1a2e), transparent);
-}
-.theme-elegant .lt-content {
-  padding: 18px 32px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.theme-elegant .lt-title {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  font-size: 30px;
-  color: #1a1a2e;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-.theme-elegant .lt-subtitle {
-  font-family: 'Barlow', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  color: #666;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-.theme-elegant .lt-tag {
-  position: absolute;
-  bottom: 0; left: 32px;
-  background: var(--accent, #1a1a2e);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 3px 12px;
-}
-
-/* ═══════════════════════════════════════
-   THEME: TECH (Futuristic/Cyber)
-═══════════════════════════════════════ */
-.theme-tech .lt-box {
-  position: relative;
-  margin-left: 80px;
-  display: inline-block;
-  min-width: 580px;
-  border: 1px solid var(--accent, #00f5ff);
-  background: rgba(0,10,20,0.88);
-  box-shadow: 0 0 30px rgba(0,245,255,0.15), inset 0 0 30px rgba(0,245,255,0.03);
-  overflow: hidden;
-}
-.theme-tech .lt-scanline {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,245,255,0.02) 2px, rgba(0,245,255,0.02) 4px);
+  align-items: center;
   pointer-events: none;
 }
-.theme-tech .lt-corner {
-  position: absolute;
-  width: 12px; height: 12px;
-  border-color: var(--accent, #00f5ff);
-  border-style: solid;
-}
-.theme-tech .lt-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-.theme-tech .lt-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
-.theme-tech .lt-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
-.theme-tech .lt-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-.theme-tech .lt-content {
-  padding: 16px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.theme-tech .lt-tag {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 4px;
-  color: var(--accent, #00f5ff);
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-.theme-tech .lt-title {
-  font-family: 'Rajdhani', sans-serif;
+#countdown-wrapper.active { display: flex; }
+.cd-label {
+  font-family: 'Barlow', sans-serif;
   font-weight: 700;
-  font-size: 34px;
-  color: #fff;
-  letter-spacing: 2px;
+  font-size: 28px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 6px;
   text-transform: uppercase;
+  margin-bottom: 10px;
+  text-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+.cd-ring {
+  position: relative;
+  width: 220px; height: 220px;
+}
+.cd-ring svg { transform: rotate(-90deg); }
+.cd-ring .track { fill:none; stroke:rgba(255,255,255,0.1); stroke-width:10; }
+.cd-ring .progress { fill:none; stroke:var(--cd-accent,#e63946); stroke-width:10; stroke-linecap:round;
+  stroke-dasharray: 565; stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  filter: drop-shadow(0 0 8px var(--cd-accent,#e63946));
+}
+.cd-number {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 100px;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(0,0,0,0.5);
   line-height: 1;
 }
-.theme-tech .lt-subtitle {
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: var(--accent, #00f5ff);
-  letter-spacing: 2px;
-  opacity: 0.8;
-}
-
-/* ═══════════════════════════════════════
-   THEME: MINIMAL (Clean Modern)
-═══════════════════════════════════════ */
-.theme-minimal .lt-box {
-  position: relative;
-  margin-left: 80px;
-  display: inline-flex;
-  align-items: stretch;
-  overflow: hidden;
-}
-.theme-minimal .lt-line {
-  width: 4px;
-  background: var(--accent, #e63946);
-  margin-right: 20px;
-}
-.theme-minimal .lt-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px 0;
-}
-.theme-minimal .lt-title {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
+.cd-finish {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
   font-size: 36px;
-  color: #fff;
-  letter-spacing: -1px;
-  line-height: 1;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
-}
-.theme-minimal .lt-subtitle {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  color: rgba(255,255,255,0.85);
-  letter-spacing: 2px;
+  letter-spacing: 4px;
+  color: var(--cd-accent,#e63946);
   text-transform: uppercase;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
-
-/* ═══════════════════════════════════════
-   THEME: GRADIENT (Vibrant Modern)
-═══════════════════════════════════════ */
-.theme-gradient .lt-box {
-  position: relative;
-  margin-left: 80px;
-  display: inline-flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-radius: 4px;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.4);
-}
-.theme-gradient .lt-grad-bar {
-  height: 5px;
-  background: linear-gradient(90deg, var(--accent, #667eea), #764ba2, #f093fb);
-}
-.theme-gradient .lt-content {
-  background: rgba(10,10,20,0.92);
-  padding: 14px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  backdrop-filter: blur(8px);
-}
-.theme-gradient .lt-title {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  font-size: 32px;
-  color: #fff;
-  line-height: 1;
-}
-.theme-gradient .lt-subtitle {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 16px;
-  color: rgba(255,255,255,0.65);
-  letter-spacing: 1px;
-}
-
-/* ─── TICKER TAPE ─── */
-#ticker-wrapper {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 44px;
-  overflow: hidden;
-  display: none;
-}
-#ticker-wrapper.active { display: flex; align-items: stretch; }
-.ticker-label {
-  background: var(--accent, #e63946);
-  color: #fff;
-  font-family: 'Barlow', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  z-index: 2;
-}
-.ticker-track {
-  background: rgba(0,0,0,0.85);
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
-.ticker-text {
-  position: absolute;
-  white-space: nowrap;
-  font-family: 'Barlow', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  line-height: 44px;
-  animation: ticker-scroll 20s linear infinite;
-}
-@keyframes ticker-scroll {
-  from { transform: translateX(100vw); }
-  to { transform: translateX(-100%); }
-}
-
-/* ─── ANIMATIONS: IN ─── */
-/* slide-left */
-@keyframes slideInLeft { from { opacity:0; transform:translateX(-80px); } to { opacity:1; transform:translateX(0); } }
-/* slide-right */
-@keyframes slideInRight { from { opacity:0; transform:translateX(80px); } to { opacity:1; transform:translateX(0); } }
-/* slide-up */
-@keyframes slideInUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
-/* slide-down */
-@keyframes slideInDown { from { opacity:0; transform:translateY(-40px); } to { opacity:1; transform:translateY(0); } }
-/* fade */
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-/* scale */
-@keyframes scaleIn { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
-/* wipe */
-@keyframes wipeIn { from { clip-path:inset(0 100% 0 0); } to { clip-path:inset(0 0% 0 0); } }
-/* bounce */
-@keyframes bounceIn {
-  0%   { opacity:0; transform:translateY(60px); }
-  60%  { opacity:1; transform:translateY(-10px); }
-  80%  { transform:translateY(5px); }
-  100% { transform:translateY(0); }
-}
-/* glitch */
-@keyframes glitchIn {
-  0%   { opacity:0; transform:translateX(-5px) skewX(5deg); filter:hue-rotate(90deg); }
-  25%  { opacity:1; transform:translateX(4px) skewX(-3deg); filter:hue-rotate(0); }
-  50%  { transform:translateX(-2px) skewX(2deg); }
-  75%  { transform:translateX(1px); }
-  100% { transform:translateX(0) skewX(0); filter:none; }
-}
-/* split-reveal */
-@keyframes splitTop { from { transform:translateY(-100%); } to { transform:translateY(0); } }
-@keyframes splitBot { from { transform:translateY(100%); } to { transform:translateY(0); } }
-
-/* ─── ANIMATIONS: OUT ─── */
-@keyframes slideOutLeft { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(-80px); } }
-@keyframes slideOutRight { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(80px); } }
-@keyframes slideOutDown { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(40px); } }
-@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-@keyframes scaleOut { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(0.85); } }
-@keyframes wipeOut { from { clip-path:inset(0 0% 0 0); } to { clip-path:inset(0 100% 0 0); } }
-
-.lt-box {
+  margin-top: 16px;
   opacity: 0;
-  will-change: transform, opacity;
+  transition: opacity 0.4s;
 }
-.lt-box.anim-in {  animation-duration: 0.6s; animation-fill-mode: forwards; animation-timing-function: cubic-bezier(0.22,1,0.36,1); }
-.lt-box.anim-out { animation-duration: 0.5s; animation-fill-mode: forwards; animation-timing-function: ease-in; }
+.cd-finish.show { opacity: 1; }
 
-.anim-in.in-slide-left   { animation-name: slideInLeft; }
-.anim-in.in-slide-right  { animation-name: slideInRight; }
-.anim-in.in-slide-up     { animation-name: slideInUp; }
-.anim-in.in-slide-down   { animation-name: slideInDown; }
-.anim-in.in-fade         { animation-name: fadeIn; animation-duration: 0.8s; }
-.anim-in.in-scale        { animation-name: scaleIn; }
-.anim-in.in-wipe         { animation-name: wipeIn; animation-duration: 0.7s; }
-.anim-in.in-bounce       { animation-name: bounceIn; animation-duration: 0.8s; }
-.anim-in.in-glitch       { animation-name: glitchIn; animation-duration: 0.7s; animation-timing-function: steps(4); }
+/* ══════════ TICKER ══════════ */
+#ticker-wrapper { position:absolute; bottom:0; left:0; right:0; height:44px; overflow:hidden; display:none; }
+#ticker-wrapper.active { display:flex; align-items:stretch; }
+.ticker-label { background:var(--accent,#e63946); color:#fff; font-family:'Barlow',sans-serif; font-weight:700; font-size:14px; letter-spacing:2px; text-transform:uppercase; padding:0 20px; display:flex; align-items:center; white-space:nowrap; z-index:2; }
+.ticker-track { background:rgba(0,0,0,.85); flex:1; overflow:hidden; position:relative; }
+.ticker-text { position:absolute; white-space:nowrap; font-family:'Barlow',sans-serif; font-size:15px; font-weight:600; color:#fff; line-height:44px; animation:ticker-scroll 22s linear infinite; }
+@keyframes ticker-scroll { from{transform:translateX(100vw)} to{transform:translateX(-100%)} }
 
-.anim-out.out-slide-left  { animation-name: slideOutLeft; }
-.anim-out.out-slide-right { animation-name: slideOutRight; }
-.anim-out.out-slide-down  { animation-name: slideOutDown; }
-.anim-out.out-fade        { animation-name: fadeOut; }
-.anim-out.out-scale       { animation-name: scaleOut; }
-.anim-out.out-wipe        { animation-name: wipeOut; }
+/* ══════════ ANIMATIONS IN ══════════ */
+@keyframes slideInLeft  { from{opacity:0;transform:translateX(-80px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideInRight { from{opacity:0;transform:translateX(80px)}  to{opacity:1;transform:translateX(0)} }
+@keyframes slideInUp    { from{opacity:0;transform:translateY(40px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes slideInDown  { from{opacity:0;transform:translateY(-40px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn       { from{opacity:0} to{opacity:1} }
+@keyframes scaleIn      { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
+@keyframes wipeIn       { from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0% 0 0)} }
+@keyframes bounceIn     { 0%{opacity:0;transform:translateY(60px)} 60%{opacity:1;transform:translateY(-10px)} 80%{transform:translateY(5px)} 100%{transform:translateY(0)} }
+@keyframes glitchIn     { 0%{opacity:0;transform:translateX(-5px) skewX(5deg);filter:hue-rotate(90deg)} 25%{opacity:1;transform:translateX(4px) skewX(-3deg);filter:none} 50%{transform:translateX(-2px) skewX(2deg)} 100%{transform:translateX(0) skewX(0)} }
+
+/* ANIMATIONS OUT */
+@keyframes slideOutLeft  { from{opacity:1;transform:translateX(0)}  to{opacity:0;transform:translateX(-80px)} }
+@keyframes slideOutRight { from{opacity:1;transform:translateX(0)}  to{opacity:0;transform:translateX(80px)} }
+@keyframes slideOutDown  { from{opacity:1;transform:translateY(0)}  to{opacity:0;transform:translateY(40px)} }
+@keyframes fadeOut       { from{opacity:1} to{opacity:0} }
+@keyframes scaleOut      { from{opacity:1;transform:scale(1)} to{opacity:0;transform:scale(0.85)} }
+@keyframes wipeOut       { from{clip-path:inset(0 0% 0 0)} to{clip-path:inset(0 100% 0 0)} }
+
+.lt-box { opacity:0; will-change:transform,opacity; }
+.lt-box.anim-in  { animation-duration:.6s; animation-fill-mode:forwards; animation-timing-function:cubic-bezier(.22,1,.36,1); }
+.lt-box.anim-out { animation-duration:.5s; animation-fill-mode:forwards; animation-timing-function:ease-in; }
+.anim-in.in-slide-left   { animation-name:slideInLeft; }
+.anim-in.in-slide-right  { animation-name:slideInRight; }
+.anim-in.in-slide-up     { animation-name:slideInUp; }
+.anim-in.in-slide-down   { animation-name:slideInDown; }
+.anim-in.in-fade         { animation-name:fadeIn; animation-duration:.8s; }
+.anim-in.in-scale        { animation-name:scaleIn; }
+.anim-in.in-wipe         { animation-name:wipeIn; animation-duration:.7s; }
+.anim-in.in-bounce       { animation-name:bounceIn; animation-duration:.8s; }
+.anim-in.in-glitch       { animation-name:glitchIn; animation-duration:.7s; animation-timing-function:steps(4); }
+.anim-out.out-slide-left  { animation-name:slideOutLeft; }
+.anim-out.out-slide-right { animation-name:slideOutRight; }
+.anim-out.out-slide-down  { animation-name:slideOutDown; }
+.anim-out.out-fade        { animation-name:fadeOut; }
+.anim-out.out-scale       { animation-name:scaleOut; }
+.anim-out.out-wipe        { animation-name:wipeOut; }
 </style>
 </head>
 <body>
 
+<!-- LOWER THIRD -->
 <div id="lt-wrapper">
   <div id="lt-box" class="lt-box"></div>
 </div>
 
+<!-- COUNTDOWN -->
+<div id="countdown-wrapper">
+  <div class="cd-label" id="cd-label">DIMULAI DALAM</div>
+  <div class="cd-ring">
+    <svg viewBox="0 0 190 190" width="220" height="220">
+      <circle class="track" cx="95" cy="95" r="90"/>
+      <circle class="progress" id="cd-progress" cx="95" cy="95" r="90"/>
+    </svg>
+    <div class="cd-number" id="cd-number">0</div>
+  </div>
+  <div class="cd-finish" id="cd-finish">MULAI!</div>
+</div>
+
+<!-- TICKER -->
 <div id="ticker-wrapper">
-  <div class="ticker-label">BREAKING</div>
+  <div class="ticker-label" id="ticker-label">INFO</div>
   <div class="ticker-track">
     <div class="ticker-text" id="ticker-text"></div>
   </div>
@@ -445,16 +210,32 @@ const socket = io();
 const box = document.getElementById('lt-box');
 const tickerWrapper = document.getElementById('ticker-wrapper');
 const tickerText = document.getElementById('ticker-text');
-let hideTimer = null;
+const tickerLabel = document.getElementById('ticker-label');
+const cdWrapper = document.getElementById('countdown-wrapper');
+const cdNumber = document.getElementById('cd-number');
+const cdProgress = document.getElementById('cd-progress');
+const cdFinish = document.getElementById('cd-finish');
+const cdLabelEl = document.getElementById('cd-label');
 
+let hideTimer = null;
+let cdInterval = null;
+const CIRCUMFERENCE = 2 * Math.PI * 90; // ~565.5
+
+// ─── BUILD HTML ───
 function buildHTML(state) {
   const d = state.data;
   const accent = d.accent || '#e63946';
   document.documentElement.style.setProperty('--accent', accent);
 
-  const themes = {
+  const logoHtml = d.logoUrl
+    ? `<img class="lt-logo" src="${d.logoUrl}" onerror="this.style.display='none'">`
+    : '';
+  const hasLogo = !!d.logoUrl;
+
+  const contents = {
     broadcast: `
       <div class="lt-accent"></div>
+      ${hasLogo ? logoHtml : ''}
       <div class="lt-content">
         ${d.tag ? `<div class="lt-tag">${d.tag}</div>` : ''}
         <div class="lt-title">${d.title}</div>
@@ -462,70 +243,82 @@ function buildHTML(state) {
       </div>`,
     sport: `
       ${d.tag ? `<div class="lt-top-bar"><div class="lt-tag">${d.tag}</div></div>` : ''}
-      <div class="lt-content">
-        <div class="lt-title">${d.title}</div>
-        ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+      <div class="lt-content" style="flex-direction:row;align-items:center;gap:14px">
+        ${hasLogo ? logoHtml : ''}
+        <div>
+          <div class="lt-title">${d.title}</div>
+          ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+        </div>
       </div>`,
     elegant: `
       <div class="lt-border-top"></div>
-      <div class="lt-content">
-        <div class="lt-title">${d.title}</div>
-        ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+      <div class="lt-content" style="flex-direction:row;align-items:center;gap:14px">
+        ${hasLogo ? logoHtml : ''}
+        <div>
+          <div class="lt-title">${d.title}</div>
+          ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+        </div>
       </div>
       ${d.tag ? `<div class="lt-tag">${d.tag}</div>` : ''}`,
     tech: `
       <div class="lt-scanline"></div>
       <div class="lt-corner tl"></div><div class="lt-corner tr"></div>
       <div class="lt-corner bl"></div><div class="lt-corner br"></div>
-      <div class="lt-content">
-        ${d.tag ? `<div class="lt-tag">// ${d.tag}</div>` : ''}
-        <div class="lt-title">${d.title}</div>
-        ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+      <div class="lt-content" style="flex-direction:row;align-items:center;gap:14px">
+        ${hasLogo ? logoHtml : ''}
+        <div>
+          ${d.tag ? `<div class="lt-tag">// ${d.tag}</div>` : ''}
+          <div class="lt-title">${d.title}</div>
+          ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+        </div>
       </div>`,
     minimal: `
       <div class="lt-line"></div>
-      <div class="lt-content">
-        <div class="lt-title">${d.title}</div>
-        ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+      <div class="lt-content" style="flex-direction:row;align-items:center;gap:14px">
+        ${hasLogo ? logoHtml : ''}
+        <div>
+          <div class="lt-title">${d.title}</div>
+          ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+        </div>
       </div>`,
     gradient: `
       <div class="lt-grad-bar"></div>
-      <div class="lt-content">
-        <div class="lt-title">${d.title}</div>
-        ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+      <div class="lt-content" style="flex-direction:row;align-items:center;gap:14px">
+        ${hasLogo ? logoHtml : ''}
+        <div>
+          <div class="lt-title">${d.title}</div>
+          ${d.subtitle ? `<div class="lt-subtitle">${d.subtitle}</div>` : ''}
+        </div>
       </div>`
   };
 
-  return themes[state.theme] || themes.broadcast;
+  return contents[state.theme] || contents.broadcast;
 }
 
+// ─── SHOW ───
 function showLT(state) {
   if (hideTimer) clearTimeout(hideTimer);
+  stopCountdown();
 
   const d = state.data;
   box.className = `lt-box theme-${state.theme}`;
   box.innerHTML = buildHTML(state);
-
-  // force reflow
   void box.offsetWidth;
-
   box.classList.add('anim-in', `in-${state.animIn}`);
 
-  // ticker
   if (d.showTicker && d.ticker) {
     tickerText.textContent = d.ticker;
+    tickerLabel.textContent = d.tickerLabel || 'INFO';
     tickerWrapper.classList.add('active');
   }
 }
 
+// ─── HIDE ───
 function hideLT(animOut) {
   box.classList.remove('anim-in');
-  // remove all in- classes
   [...box.classList].filter(c => c.startsWith('in-')).forEach(c => box.classList.remove(c));
-
   void box.offsetWidth;
   box.classList.add('anim-out', `out-${animOut || 'fade'}`);
-
   hideTimer = setTimeout(() => {
     box.className = 'lt-box';
     box.innerHTML = '';
@@ -533,17 +326,64 @@ function hideLT(animOut) {
   }, 600);
 }
 
-socket.on('state', (state) => {
-  if (state.visible) showLT(state);
-});
+// ─── COUNTDOWN ───
+function startCountdown(state) {
+  stopCountdown();
+  const d = state.data;
+  const total = Number(d.countdown) || 10;
+  let remaining = total;
+  const accent = d.accent || '#e63946';
 
-socket.on('show', (state) => showLT(state));
+  document.documentElement.style.setProperty('--cd-accent', accent);
+  cdLabelEl.textContent = d.countdownLabel || 'DIMULAI DALAM';
+  cdNumber.textContent = remaining;
+  cdFinish.classList.remove('show');
+  cdWrapper.classList.add('active');
+
+  // hide lower third while countdown
+  hideLT(state.animOut);
+
+  function tick() {
+    const ratio = remaining / total;
+    cdProgress.style.strokeDashoffset = CIRCUMFERENCE * (1 - ratio);
+    cdNumber.textContent = remaining;
+
+    // color shift: green when approaching
+    if (remaining <= 5) document.documentElement.style.setProperty('--cd-accent', '#2ec4b6');
+    if (remaining <= 0) {
+      cdNumber.textContent = '0';
+      cdProgress.style.strokeDashoffset = CIRCUMFERENCE;
+      cdFinish.classList.add('show');
+      setTimeout(() => {
+        cdWrapper.classList.remove('active');
+        cdFinish.classList.remove('show');
+        // auto-show lower third after countdown
+        showLT(state);
+      }, 1500);
+      return;
+    }
+    remaining--;
+    cdInterval = setTimeout(tick, 1000);
+  }
+  tick();
+}
+
+function stopCountdown() {
+  if (cdInterval) { clearTimeout(cdInterval); cdInterval = null; }
+  cdWrapper.classList.remove('active');
+}
+
+// ─── SOCKET EVENTS ───
+socket.on('state', (state) => { if (state.visible) showLT(state); });
+socket.on('show', showLT);
 socket.on('hide', ({ animOut }) => hideLT(animOut));
 socket.on('ticker', (text) => {
-  tickerText.textContent = text;
-  if (text) tickerWrapper.classList.add('active');
+  if (text) { tickerText.textContent = text; tickerWrapper.classList.add('active'); }
   else tickerWrapper.classList.remove('active');
 });
+socket.on('countdown:start', startCountdown);
+socket.on('countdown:stop', stopCountdown);
+socket.on('autoHidden', () => hideLT('fade'));
 </script>
 </body>
 </html>
