@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Lower Third Controller</title>
 <script src="/socket.io/socket.io.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -10,143 +10,176 @@
 :root {
   --bg:#0d0d0f; --surface:#1a1a1f; --surface2:#242429; --border:#2e2e36;
   --text:#f0f0f5; --muted:#7a7a8c; --accent:#e63946; --blue:#4f8ef7;
-  --green:#2ec4b6; --yellow:#f5a623; --radius:12px;
+  --green:#2ec4b6; --yellow:#f5a623; --radius:14px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px;overscroll-behavior:none}
 
-/* TOPBAR */
+/* ── TOPBAR ── */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .topbar-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
 .topbar-title span{color:var(--accent)}
-.status-dot{width:8px;height:8px;border-radius:50%;background:#555;transition:background .3s}
-.status-dot.connected{background:var(--green);box-shadow:0 0 0 3px rgba(46,196,182,.2);animation:pls 2s infinite}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#444;transition:background .3s}
+.status-dot.connected{background:var(--green);animation:pls 2s infinite}
 @keyframes pls{0%,100%{box-shadow:0 0 0 3px rgba(46,196,182,.2)}50%{box-shadow:0 0 0 6px rgba(46,196,182,.05)}}
-.live-badge{display:none;align-items:center;gap:6px;background:rgba(230,57,70,.15);border:1px solid var(--accent);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.live-badge{display:none;align-items:center;gap:5px;background:rgba(230,57,70,.15);border:1px solid var(--accent);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px}
 .live-badge.active{display:flex}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* TABS */
-.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+/* ── TABS ── */
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:1;min-width:max-content;padding:11px 14px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab{flex:0 0 auto;padding:13px 16px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.3px}
 .tab.active{color:var(--text);border-bottom-color:var(--accent)}
 
-/* CONTENT */
-.content{display:none;padding:16px}
+/* ── CONTENT ── */
+.content{display:none;padding:16px 16px 100px}
 .content.active{display:block}
 
-/* CARD */
+/* ── CARDS ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.card-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.card-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 
-/* INPUTS */
-.field{margin-bottom:12px}
-.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px}
+/* ── INPUTS ── */
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:7px;letter-spacing:.3px}
 input[type=text],input[type=url],input[type=number],textarea,select{
-  width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;
-  color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:10px 14px;outline:none;transition:border .2s;-webkit-appearance:none}
+  width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:12px 14px;
+  outline:none;transition:border .2s;-webkit-appearance:none;
+  -webkit-font-smoothing:antialiased}
 input:focus,textarea:focus,select:focus{border-color:var(--blue)}
-textarea{resize:vertical;min-height:60px}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
 select option{background:var(--surface2)}
-input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);height:20px}
 
-/* THEME GRID */
+/* ── PREVIEW BOX ── */
+.preview-box{background:linear-gradient(135deg,#0f2440 0%,#1e1040 100%);border-radius:12px;height:120px;display:flex;align-items:flex-end;padding:14px;margin-bottom:14px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.preview-box::before{content:'16:9';position:absolute;top:8px;right:10px;font-size:10px;color:rgba(255,255,255,.25);font-weight:600}
+.preview-lt{display:flex;align-items:stretch;max-width:92%}
+.preview-accent{width:4px;border-radius:2px 0 0 2px;flex-shrink:0;transition:background .3s}
+.preview-content{background:rgba(0,0,0,.82);padding:8px 14px;border-radius:0 6px 6px 0}
+.preview-title{font-size:14px;font-weight:700;color:#fff;line-height:1.2}
+.preview-sub{font-size:10px;color:rgba(255,255,255,.55);margin-top:3px;letter-spacing:1.2px;text-transform:uppercase}
+
+/* ── BIG ACTION BUTTONS ── */
+.action-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.btn-action{padding:18px 10px;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:transform .12s,opacity .12s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;letter-spacing:.3px;min-height:64px}
+.btn-action:active{transform:scale(.94);opacity:.85}
+.btn-action .icon{font-size:22px;line-height:1}
+.btn-show{background:var(--accent);color:#fff;box-shadow:0 4px 24px rgba(230,57,70,.4)}
+.btn-hide{background:var(--surface2);color:var(--text);border:1.5px solid var(--border)}
+.btn-save-scene{width:100%;padding:14px;border:none;border-radius:12px;background:rgba(245,166,35,.12);color:var(--yellow);border:1.5px solid rgba(245,166,35,.3);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-save-scene:active{transform:scale(.97)}
+
+/* ── GENERIC BUTTONS ── */
+.btn{padding:14px 16px;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:active{transform:scale(.96)}
+.btn-full{width:100%;background:var(--blue);color:#fff}
+.btn-green{background:var(--green);color:#000}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1.5px solid var(--border)}
+.btn-danger-ghost{background:rgba(230,57,70,.1);color:var(--accent);border:1.5px solid rgba(230,57,70,.25)}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── THEME GRID ── */
 .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.theme-card{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s}
+.theme-card{background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.theme-card:active{transform:scale(.95)}
 .theme-card.selected{border-color:var(--accent);background:rgba(230,57,70,.08)}
-.theme-card .ti{font-size:22px;margin-bottom:4px}
+.theme-card .ti{font-size:24px;margin-bottom:5px}
 .theme-card .tn{font-size:11px;font-weight:600;color:var(--muted)}
 .theme-card.selected .tn{color:var(--text)}
 
-/* ANIM GRID */
-.anim-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-.anim-btn{background:var(--surface2);border:2px solid var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s}
-.anim-btn.sel-in{border-color:var(--blue);color:var(--text)}
-.anim-btn.sel-out{border-color:var(--yellow);color:var(--text)}
+/* ── ANIM GRID ── */
+.anim-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.anim-dot{width:8px;height:8px;border-radius:50%}
+.dot-in{background:var(--blue)}
+.dot-out{background:var(--yellow)}
+.anim-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:16px}
+.anim-btn{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:13px 10px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);transition:all .12s;min-height:46px;display:flex;align-items:center;justify-content:center}
+.anim-btn:active{transform:scale(.94)}
+.anim-btn.sel-in{border-color:var(--blue);color:var(--text);background:rgba(79,142,247,.08)}
+.anim-btn.sel-out{border-color:var(--yellow);color:var(--text);background:rgba(245,166,35,.08)}
 
-/* BTNS */
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.btn{padding:14px;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.3px}
-.btn:active{transform:scale(.96)}
-.btn-show{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(230,57,70,.35)}
-.btn-hide{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-full{grid-column:1/-1;background:var(--blue);color:#fff}
-.btn-green{background:var(--green);color:#fff;box-shadow:0 4px 20px rgba(46,196,182,.3)}
-.btn-yellow{background:var(--yellow);color:#000}
-.btn-danger{background:rgba(230,57,70,.1);color:var(--accent);border:1px solid rgba(230,57,70,.3)}
-.btn-sm{padding:8px 14px;font-size:12px;border-radius:8px}
-
-/* TOGGLE */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
-.toggle-label{font-size:13px;font-weight:500}
-.toggle{position:relative;width:44px;height:24px}
+/* ── TOGGLE ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.toggle-label{font-size:14px;font-weight:500}
+.toggle{position:relative;width:48px;height:26px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:var(--surface2);border:1px solid var(--border);border-radius:24px;cursor:pointer;transition:.2s}
-.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s}
+.toggle-slider{position:absolute;inset:0;background:var(--surface2);border:1.5px solid var(--border);border-radius:26px;cursor:pointer;transition:.2s}
+.toggle-slider:before{content:'';position:absolute;width:19px;height:19px;left:2px;top:2px;background:#666;border-radius:50%;transition:.2s}
 input:checked+.toggle-slider{background:var(--accent);border-color:var(--accent)}
-input:checked+.toggle-slider:before{transform:translateX(20px)}
+input:checked+.toggle-slider:before{background:#fff;transform:translateX(22px)}
 
-/* SWATCHES */
-.swatch-row{display:flex;gap:8px;flex-wrap:wrap}
-.swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s,border-color .15s}
-.swatch.active{border-color:#fff;transform:scale(1.15)}
-input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(--border);padding:2px;background:var(--surface2);cursor:pointer}
+/* ── SWATCHES ── */
+.swatch-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0}
+.swatch.active{border-color:#fff;transform:scale(1.18)}
+.swatch:active{transform:scale(1.05)}
+input[type=color]{width:36px;height:36px;border-radius:50%;border:3px solid var(--border);padding:2px;background:var(--surface2);cursor:pointer;flex-shrink:0}
 
-/* PREVIEW */
-.preview-box{background:linear-gradient(135deg,#1a3a5c,#2d1b4e);border-radius:10px;height:100px;display:flex;align-items:flex-end;padding:10px;margin-bottom:12px;overflow:hidden}
-.preview-lt{display:flex;align-items:stretch;max-width:90%}
-.preview-accent{width:4px;background:var(--accent,#e63946);flex-shrink:0}
-.preview-content{background:rgba(0,0,0,.85);padding:6px 12px}
-.preview-title{font-size:13px;font-weight:700;color:#fff;line-height:1}
-.preview-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px;letter-spacing:1px;text-transform:uppercase}
-
-/* SCENE CARDS */
-.scene-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .2s}
-.scene-card:active{transform:scale(.98)}
+/* ── SCENE CARDS ── */
+.scene-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.scene-card:active{transform:scale(.99)}
 .scene-info{flex:1;min-width:0}
-.scene-name{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.scene-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.scene-actions{display:flex;gap:6px;flex-shrink:0}
-.icon-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:14px;color:var(--text);transition:all .15s}
-.icon-btn:active{transform:scale(.9)}
-.icon-btn.play{border-color:var(--green);color:var(--green)}
+.scene-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scene-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.scene-actions{display:flex;gap:7px;flex-shrink:0}
+.icon-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:16px;color:var(--text);min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.icon-btn:active{transform:scale(.88)}
+.icon-btn.play{border-color:rgba(46,196,182,.4);color:var(--green)}
 .icon-btn.del{border-color:rgba(230,57,70,.3);color:var(--accent)}
 
-/* PRESET CARD */
-.preset-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .2s}
+/* ── PRESET CARDS ── */
+.preset-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s}
 .preset-card:active{transform:scale(.98);background:var(--border)}
-.preset-icon{font-size:22px;flex-shrink:0}
+.preset-icon{font-size:24px;flex-shrink:0;width:36px;text-align:center}
 .preset-info{flex:1}
-.preset-title{font-weight:600;font-size:13px;margin-bottom:2px}
-.preset-desc{font-size:11px;color:var(--muted)}
+.preset-title{font-weight:700;font-size:14px;margin-bottom:3px}
+.preset-desc{font-size:12px;color:var(--muted)}
+.preset-arrow{color:var(--muted);font-size:20px;flex-shrink:0}
 
-/* LOGO PREVIEW */
-.logo-preview{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--surface2);border:1px solid var(--border);margin-top:8px;display:none}
+/* ── COUNTDOWN ── */
+.cd-display{background:var(--surface2);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;border:1.5px solid var(--border)}
+.cd-big{font-size:64px;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.cd-big small{color:var(--muted);font-size:26px;font-weight:400}
 
-/* COUNTDOWN UI */
-.cd-display{background:var(--surface2);border-radius:10px;padding:16px;text-align:center;margin-bottom:12px}
-.cd-big{font-size:56px;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
-.cd-big span{color:var(--muted);font-size:24px;font-weight:400}
+/* ── LOGO PREVIEW ── */
+.logo-preview{width:60px;height:60px;object-fit:contain;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);margin-top:10px;display:none}
 
-/* AUTOHIDE DISPLAY */
-.ah-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
-.ah-val{font-size:13px;color:var(--text);font-weight:600}
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:10px}
+.empty-text{font-size:13px;line-height:1.6}
 
-/* EMPTY STATE */
-.empty{text-align:center;padding:32px 16px;color:var(--muted)}
-.empty-icon{font-size:36px;margin-bottom:8px}
-.empty-text{font-size:13px}
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:4px 0 14px}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px}
+.toast{background:rgba(30,30,36,.95);backdrop-filter:blur(12px);color:#fff;padding:11px 22px;border-radius:22px;font-size:13px;font-weight:600;white-space:nowrap;border:1px solid rgba(255,255,255,.12);animation:toastIn .2s ease;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── RANGE LABEL ── */
+.range-row{display:flex;align-items:center;gap:10px}
+.range-row input[type=range]{flex:1}
+.range-val{font-size:14px;font-weight:700;min-width:32px;text-align:right;color:var(--text)}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
+.section-label:first-child{margin-top:0}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-title">🎬 <span>Noob</span>LT v2</div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="live-badge" id="liveBadge"><div class="live-dot"></div> LIVE</div>
+  <div class="topbar-title">🎬 <span>Noob</span>LT</div>
+  <div class="topbar-right">
+    <div class="live-badge" id="liveBadge"><div class="live-dot"></div>LIVE</div>
     <div class="status-dot" id="statusDot"></div>
   </div>
 </div>
@@ -155,16 +188,18 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
 <div class="tabs">
   <div class="tab active" data-tab="compose">✏️ Compose</div>
   <div class="tab" data-tab="scenes">🎬 Scenes</div>
-  <div class="tab" data-tab="presets">⚡ Presets</div>
+  <div class="tab" data-tab="presets">⚡ Preset</div>
   <div class="tab" data-tab="style">🎨 Style</div>
   <div class="tab" data-tab="tools">🛠️ Tools</div>
 </div>
 
-<!-- ═══ COMPOSE ═══ -->
+<!-- ══════ COMPOSE ══════ -->
 <div class="content active" id="tab-compose">
+
+  <!-- Preview -->
   <div class="preview-box" id="previewBox">
     <div class="preview-lt">
-      <div class="preview-accent" id="prevAccent"></div>
+      <div class="preview-accent" id="prevAccent" style="background:#e63946"></div>
       <div class="preview-content">
         <div class="preview-title" id="prevTitle">Nama / Judul</div>
         <div class="preview-sub" id="prevSub">Jabatan / Keterangan</div>
@@ -172,49 +207,65 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
     </div>
   </div>
 
+  <!-- Konten -->
   <div class="card">
     <div class="card-title">Konten</div>
     <div class="field">
       <label>Judul / Nama *</label>
-      <input type="text" id="inTitle" placeholder="Budi Santoso" oninput="updatePreview()">
+      <input type="text" id="inTitle" placeholder="Budi Santoso" oninput="updatePreview()" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
     <div class="field">
       <label>Subjudul / Jabatan</label>
-      <input type="text" id="inSubtitle" placeholder="Direktur Utama" oninput="updatePreview()">
+      <input type="text" id="inSubtitle" placeholder="Direktur Utama" oninput="updatePreview()" autocomplete="off" spellcheck="false">
     </div>
     <div class="field">
       <label>Tag / Label</label>
-      <input type="text" id="inTag" placeholder="NARASUMBER / LIVE / dll">
+      <input type="text" id="inTag" placeholder="NARASUMBER · LIVE · dll" autocomplete="off" spellcheck="false">
     </div>
   </div>
 
-  <div class="btn-row">
-    <button class="btn btn-show" onclick="showLT()">▶ TAMPIL</button>
-    <button class="btn btn-hide" onclick="hideLT()">■ SEMBUNYI</button>
+  <!-- Aksi utama — big tappable buttons -->
+  <div class="action-bar">
+    <button class="btn-action btn-show" onclick="showLT()">
+      <span class="icon">▶</span>TAMPIL
+    </button>
+    <button class="btn-action btn-hide" onclick="hideLT()">
+      <span class="icon">■</span>SEMBUNYI
+    </button>
   </div>
-  <div class="btn-row" style="margin-top:8px">
-    <button class="btn btn-yellow btn-sm" onclick="saveAsScene()" style="grid-column:1/-1">💾 Simpan sebagai Scene</button>
-  </div>
+
+  <button class="btn-save-scene" onclick="saveAsScene()">💾 Simpan sebagai Scene</button>
+
 </div>
 
-<!-- ═══ SCENES ═══ -->
+<!-- ══════ SCENES ══════ -->
 <div class="content" id="tab-scenes">
   <div class="card">
     <div class="card-title">Scene Library</div>
-    <div id="scene-list"><div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">Belum ada scene tersimpan.<br>Buat di tab Compose lalu tekan "Simpan sebagai Scene".</div></div></div>
+    <div id="scene-list">
+      <div class="empty">
+        <div class="empty-icon">🎬</div>
+        <div class="empty-text">Belum ada scene tersimpan.<br>Buat di Compose → Simpan sebagai Scene.</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ═══ PRESETS ═══ -->
+<!-- ══════ PRESETS ══════ -->
 <div class="content" id="tab-presets">
-  <div class="card"><div class="card-title">Preset Siap Pakai — klik untuk load</div></div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">Preset Siap Pakai</div>
+    <p style="font-size:12px;color:var(--muted);margin-top:-6px">Ketuk untuk load langsung ke editor</p>
+  </div>
   <div id="preset-list"></div>
 </div>
 
-<!-- ═══ STYLE ═══ -->
+<!-- ══════ STYLE ══════ -->
 <div class="content" id="tab-style">
+
+  <!-- Tema -->
   <div class="card">
-    <div class="card-title">Tema</div>
+    <div class="card-title">Tema Overlay</div>
     <div class="theme-grid">
       <div class="theme-card selected" data-theme="broadcast" onclick="selTheme(this)"><div class="ti">📺</div><div class="tn">Broadcast</div></div>
       <div class="theme-card" data-theme="sport" onclick="selTheme(this)"><div class="ti">🏆</div><div class="tn">Sport</div></div>
@@ -225,16 +276,7 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Logo / Gambar</div>
-    <div class="field">
-      <label>URL Gambar (png/jpg, transparan lebih baik)</label>
-      <input type="url" id="inLogo" placeholder="https://domain.com/logo.png" oninput="previewLogo()">
-    </div>
-    <img id="logoPreview" class="logo-preview" alt="Logo Preview">
-    <div style="font-size:11px;color:var(--muted);margin-top:6px">Atau gunakan URL dari Discord, Imgur, dll yang langsung ke file gambar.</div>
-  </div>
-
+  <!-- Warna aksen -->
   <div class="card">
     <div class="card-title">Warna Aksen</div>
     <div class="swatch-row" id="swatchRow">
@@ -245,13 +287,26 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
       <div class="swatch" style="background:#a855f7" data-color="#a855f7" onclick="selColor(this)"></div>
       <div class="swatch" style="background:#00f5ff" data-color="#00f5ff" onclick="selColor(this)"></div>
       <div class="swatch" style="background:#22c55e" data-color="#22c55e" onclick="selColor(this)"></div>
-      <div class="swatch" style="background:#fff"    data-color="#ffffff" onclick="selColor(this)"></div>
-      <input type="color" id="customColor" value="#e63946" onchange="selCustomColor(this)" title="Custom">
+      <div class="swatch" style="background:#ffffff" data-color="#ffffff" onclick="selColor(this)" style="border:2px solid var(--border)"></div>
+      <input type="color" id="customColor" value="#e63946" onchange="selCustomColor(this)" title="Warna custom">
     </div>
   </div>
 
+  <!-- Logo -->
   <div class="card">
-    <div class="card-title">Animasi Masuk</div>
+    <div class="card-title">Logo / Gambar</div>
+    <div class="field">
+      <label>URL Gambar (PNG transparan lebih baik)</label>
+      <input type="url" id="inLogo" placeholder="https://..." oninput="previewLogo()" autocomplete="off" spellcheck="false">
+    </div>
+    <img id="logoPreview" class="logo-preview" alt="Preview logo">
+    <p style="font-size:11px;color:var(--muted);margin-top:8px">Gunakan URL dari Discord, Imgur, atau hosting langsung ke file.</p>
+  </div>
+
+  <!-- Animasi masuk -->
+  <div class="card">
+    <div class="card-title">Animasi</div>
+    <div class="anim-label"><div class="anim-dot dot-in"></div>Masuk</div>
     <div class="anim-grid" id="animInGrid">
       <div class="anim-btn sel-in" data-anim="slide-left" onclick="selAnimIn(this)">← Slide Kiri</div>
       <div class="anim-btn" data-anim="slide-right" onclick="selAnimIn(this)">→ Slide Kanan</div>
@@ -263,10 +318,8 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
       <div class="anim-btn" data-anim="bounce" onclick="selAnimIn(this)">⤵ Bounce</div>
       <div class="anim-btn" data-anim="glitch" onclick="selAnimIn(this)">⚡ Glitch</div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Animasi Keluar</div>
+    <div class="divider"></div>
+    <div class="anim-label"><div class="anim-dot dot-out"></div>Keluar</div>
     <div class="anim-grid" id="animOutGrid">
       <div class="anim-btn sel-out" data-anim="slide-right" onclick="selAnimOut(this)">→ Slide Kanan</div>
       <div class="anim-btn" data-anim="slide-left" onclick="selAnimOut(this)">← Slide Kiri</div>
@@ -277,15 +330,14 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
     </div>
   </div>
 
-  <div class="btn-row">
-    <button class="btn btn-full" onclick="applyStyle()">✓ Terapkan Style</button>
-  </div>
+  <button class="btn btn-full" onclick="applyStyle()">✓ Terapkan Style ke OBS</button>
+
 </div>
 
-<!-- ═══ TOOLS ═══ -->
+<!-- ══════ TOOLS ══════ -->
 <div class="content" id="tab-tools">
 
-  <!-- AUTO HIDE -->
+  <!-- Auto-hide -->
   <div class="card">
     <div class="card-title">⏰ Auto-Hide Timer</div>
     <div class="toggle-row">
@@ -295,65 +347,73 @@ input[type=color]{width:32px;height:32px;border-radius:50%;border:3px solid var(
         <span class="toggle-slider"></span>
       </label>
     </div>
-    <div id="ahPanel" style="display:none;margin-top:12px">
+    <div id="ahPanel" style="display:none;margin-top:14px">
       <div class="field">
         <label>Sembunyikan setelah <span id="ahValLabel">10</span> detik</label>
-        <input type="range" id="ahSlider" min="3" max="60" value="10" oninput="ahSlide(this)">
+        <div class="range-row">
+          <input type="range" id="ahSlider" min="3" max="60" value="10" step="1" oninput="ahSlide(this)">
+          <span class="range-val" id="ahValRight">10s</span>
+        </div>
       </div>
-      <div style="font-size:11px;color:var(--muted)">Lower third akan otomatis hilang setelah ditampilkan.</div>
+      <p style="font-size:11px;color:var(--muted)">Lower third otomatis hilang setelah ditampilkan.</p>
     </div>
   </div>
 
-  <!-- COUNTDOWN TIMER -->
+  <!-- Countdown -->
   <div class="card">
     <div class="card-title">⏱️ Countdown Timer</div>
     <div class="cd-display">
-      <div class="cd-big"><span id="cdDisplay">30</span><span>s</span></div>
+      <div class="cd-big"><span id="cdDisplay">30</span><small>s</small></div>
     </div>
     <div class="field">
-      <label>Durasi countdown (detik)</label>
-      <input type="range" id="cdSlider" min="3" max="120" value="30" oninput="cdSlide(this)">
+      <label>Durasi countdown</label>
+      <div class="range-row">
+        <input type="range" id="cdSlider" min="3" max="120" value="30" step="1" oninput="cdSlide(this)">
+        <span class="range-val" id="cdValRight">30s</span>
+      </div>
     </div>
     <div class="field">
       <label>Label countdown</label>
       <input type="text" id="cdLabel" value="DIMULAI DALAM" placeholder="DIMULAI DALAM">
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Lower third akan tampil otomatis saat countdown selesai.</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Lower third tampil otomatis saat countdown selesai.</p>
     <div class="btn-row">
-      <button class="btn btn-green" onclick="startCountdown()">▶ START COUNTDOWN</button>
-      <button class="btn btn-hide" onclick="stopCountdown()">■ STOP</button>
+      <button class="btn btn-green" onclick="startCountdown()">▶ START</button>
+      <button class="btn btn-ghost" onclick="stopCountdown()">■ STOP</button>
     </div>
   </div>
 
-  <!-- TICKER -->
+  <!-- Ticker -->
   <div class="card">
     <div class="card-title">📰 Running Text / Ticker</div>
-    <div class="toggle-row" style="margin-bottom:12px">
+    <div class="toggle-row">
       <span class="toggle-label">Aktifkan Ticker</span>
       <label class="toggle">
         <input type="checkbox" id="tickerEnabled" onchange="toggleTicker()">
         <span class="toggle-slider"></span>
       </label>
     </div>
-    <div class="field">
-      <label>Label ticker</label>
-      <input type="text" id="tickerLabelIn" value="INFO" placeholder="BREAKING / INFO / dll">
-    </div>
-    <div class="field">
-      <label>Teks berjalan</label>
-      <textarea id="tickerText" placeholder="Ketik teks berita berjalan... Gunakan ● untuk pemisah"></textarea>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-full" onclick="sendTicker()">📡 Kirim Ticker</button>
+    <div style="margin-top:14px">
+      <div class="field">
+        <label>Label</label>
+        <input type="text" id="tickerLabelIn" value="INFO" placeholder="BREAKING / INFO / dll">
+      </div>
+      <div class="field">
+        <label>Teks berjalan</label>
+        <textarea id="tickerText" placeholder="Ketik teks berita berjalan... Gunakan ● untuk pemisah"></textarea>
+      </div>
+      <button class="btn btn-full" onclick="sendTicker()">📡 Kirim ke Overlay</button>
     </div>
   </div>
 
-</div><!-- end tools -->
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 const socket = io();
 
-// ─── GLOBAL STATE ───
 let st = {
   theme:'broadcast', animIn:'slide-left', animOut:'slide-right',
   data:{ accent:'#e63946', logoUrl:'', autoHide:0 }
@@ -361,13 +421,19 @@ let st = {
 let scenes = [];
 let isLive = false;
 
-// ─── SOCKET ───
+// ── SOCKET ──
 socket.on('connect', () => document.getElementById('statusDot').classList.add('connected'));
 socket.on('disconnect', () => { document.getElementById('statusDot').classList.remove('connected'); setLive(false); });
 socket.on('scenes', renderScenes);
 socket.on('autoHidden', () => setLive(false));
+socket.on('state', (s) => {
+  if (s.visible) setLive(true);
+  if (s.theme) st.theme = s.theme;
+  if (s.animIn) st.animIn = s.animIn;
+  if (s.animOut) st.animOut = s.animOut;
+});
 
-// ─── COLLECT DATA ───
+// ── COLLECT ──
 function collectData() {
   return {
     theme: st.theme,
@@ -394,90 +460,91 @@ function showLT() {
   st = { ...st, ...p };
   socket.emit('show', p);
   setLive(true);
-  toast('▶ Lower Third ditampilkan');
+  vibrate(50);
+  toast('▶ Lower Third ditampilkan', 'green');
 }
 function hideLT() {
   socket.emit('hide');
   setLive(false);
-  toast('Lower Third disembunyikan');
+  vibrate(30);
+  toast('■ Disembunyikan');
 }
 function setLive(v) {
   isLive = v;
   document.getElementById('liveBadge').classList.toggle('active', v);
 }
 
-// ─── SAVE SCENE ───
+// ── SAVE SCENE ──
 function saveAsScene() {
   const name = prompt('Nama scene:');
-  if (!name) return;
+  if (!name || !name.trim()) return;
   const p = collectData();
-  p.name = name;
+  p.name = name.trim();
   socket.emit('scene:save', p);
-  toast(`💾 Scene "${name}" disimpan`);
+  toast(`💾 Scene "${p.name}" disimpan`, 'yellow');
 }
 
-// ─── RENDER SCENES ───
+// ── RENDER SCENES ──
 function renderScenes(list) {
   scenes = list;
   const el = document.getElementById('scene-list');
   if (!list.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">Belum ada scene tersimpan.<br>Buat di tab Compose lalu tekan "Simpan sebagai Scene".</div></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🎬</div><div class="empty-text">Belum ada scene tersimpan.<br>Buat di Compose → Simpan sebagai Scene.</div></div>';
     return;
   }
   el.innerHTML = list.map(s => `
     <div class="scene-card">
       <div class="scene-info">
-        <div class="scene-name">${s.name}</div>
-        <div class="scene-meta">${s.theme} · ${s.animIn} → ${s.animOut} · ${s.data?.title || ''}</div>
+        <div class="scene-name">${esc(s.name)}</div>
+        <div class="scene-meta">${s.theme} · ${s.data?.title || ''}</div>
       </div>
       <div class="scene-actions">
-        <button class="icon-btn" onclick='loadScene(${s.id})' title="Edit & Load">📝</button>
-        <button class="icon-btn play" onclick='playScene(${s.id})' title="Play langsung">▶</button>
-        <button class="icon-btn del" onclick='deleteScene(${s.id})' title="Hapus">🗑</button>
+        <button class="icon-btn" onclick="loadScene(${s.id})" title="Edit">📝</button>
+        <button class="icon-btn play" onclick="playScene(${s.id})" title="Play">▶</button>
+        <button class="icon-btn del" onclick="deleteScene(${s.id})" title="Hapus">🗑</button>
       </div>
     </div>
   `).join('');
 }
 
+function esc(s) { const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+
 function playScene(id) {
   socket.emit('scene:load', id);
   setLive(true);
-  toast('▶ Scene dimainkan');
+  vibrate(50);
+  toast('▶ Scene dimainkan', 'green');
 }
-
 function loadScene(id) {
   const s = scenes.find(x => x.id === id);
   if (!s) return;
-  // fill form
   st.theme = s.theme; st.animIn = s.animIn; st.animOut = s.animOut;
   st.data = { ...st.data, ...s.data };
   document.getElementById('inTitle').value = s.data?.title || '';
   document.getElementById('inSubtitle').value = s.data?.subtitle || '';
   document.getElementById('inTag').value = s.data?.tag || '';
   document.getElementById('inLogo').value = s.data?.logoUrl || '';
-  // sync theme
   document.querySelectorAll('.theme-card').forEach(c => c.classList.toggle('selected', c.dataset.theme === s.theme));
   document.querySelectorAll('#animInGrid .anim-btn').forEach(c => c.classList.toggle('sel-in', c.dataset.anim === s.animIn));
   document.querySelectorAll('#animOutGrid .anim-btn').forEach(c => c.classList.toggle('sel-out', c.dataset.anim === s.animOut));
   updatePreview();
   switchTab('compose');
-  toast(`📝 Scene "${s.name}" dimuat ke editor`);
+  toast(`📝 Scene "${s.name}" dimuat`);
 }
-
 function deleteScene(id) {
   if (!confirm('Hapus scene ini?')) return;
   socket.emit('scene:delete', id);
-  toast('Scene dihapus');
+  toast('🗑 Scene dihapus');
 }
 
-// ─── PRESETS ───
+// ── PRESETS ──
 const PRESETS = [
   {icon:'🎙️',title:'Narasumber',desc:'Nama + jabatan standar',theme:'broadcast',animIn:'slide-left',animOut:'slide-right',data:{title:'Dr. Budi Santoso, M.Sc.',subtitle:'Pakar Ekonomi · Universitas Indonesia',tag:'NARASUMBER',accent:'#e63946'}},
   {icon:'📊',title:'Presenter Berita',desc:'Anchor / pembawa berita',theme:'broadcast',animIn:'wipe',animOut:'wipe',data:{title:'Rina Kusuma',subtitle:'Reporter Senior',tag:'ON AIR',accent:'#4f8ef7'}},
   {icon:'🏆',title:'Skor Pertandingan',desc:'Sport score overlay',theme:'sport',animIn:'slide-down',animOut:'slide-down',data:{title:'PERSIJA 2 — 1 PERSIB',subtitle:'Babak Kedua · 75\'',tag:'LIGA 1',accent:'#f5a623'}},
   {icon:'💼',title:'Pembicara Seminar',desc:'Corporate / webinar style',theme:'elegant',animIn:'fade',animOut:'fade',data:{title:'Prof. Ahmad Fauzi',subtitle:'CEO · PT Maju Bersama Tbk.',tag:'KEYNOTE',accent:'#1a1a2e'}},
   {icon:'🤖',title:'Tech Conference',desc:'Futuristic tech look',theme:'tech',animIn:'glitch',animOut:'scale',data:{title:'JOHANES PRADIPTA',subtitle:'Lead Engineer · NuralSystems AI',tag:'SPEAKER',accent:'#00f5ff'}},
-  {icon:'🎬',title:'Film/Dokumenter',desc:'Clean cinematic style',theme:'minimal',animIn:'fade',animOut:'fade',data:{title:'Bandung, Jawa Barat',subtitle:'2024',tag:'',accent:'#fff'}},
+  {icon:'🎬',title:'Film / Dokumenter',desc:'Clean cinematic style',theme:'minimal',animIn:'fade',animOut:'fade',data:{title:'Bandung, Jawa Barat',subtitle:'2024',tag:'',accent:'#ffffff'}},
   {icon:'🌈',title:'Content Creator',desc:'Vibrant modern style',theme:'gradient',animIn:'bounce',animOut:'slide-down',data:{title:'@yogadev.id',subtitle:'Tech & Coding Enthusiast',tag:'',accent:'#667eea'}},
   {icon:'📰',title:'Breaking News',desc:'Urgent berita terkini',theme:'broadcast',animIn:'scale',animOut:'fade',data:{title:'BREAKING: Pengumuman Penting',subtitle:'Pantau terus update terbaru',tag:'BREAKING',accent:'#e63946'}},
 ];
@@ -486,7 +553,7 @@ const presetList = document.getElementById('preset-list');
 PRESETS.forEach(p => {
   const el = document.createElement('div');
   el.className = 'preset-card';
-  el.innerHTML = `<div class="preset-icon">${p.icon}</div><div class="preset-info"><div class="preset-title">${p.title}</div><div class="preset-desc">${p.desc}</div></div><div style="color:var(--muted);font-size:18px">›</div>`;
+  el.innerHTML = `<div class="preset-icon">${p.icon}</div><div class="preset-info"><div class="preset-title">${p.title}</div><div class="preset-desc">${p.desc}</div></div><div class="preset-arrow">›</div>`;
   el.onclick = () => loadPreset(p);
   presetList.appendChild(el);
 });
@@ -497,6 +564,10 @@ function loadPreset(p) {
   document.getElementById('inTitle').value = p.data.title;
   document.getElementById('inSubtitle').value = p.data.subtitle;
   document.getElementById('inTag').value = p.data.tag || '';
+  if (p.data.accent) {
+    document.querySelectorAll('.swatch').forEach(c => c.classList.toggle('active', c.dataset.color === p.data.accent));
+    document.getElementById('prevAccent').style.background = p.data.accent;
+  }
   document.querySelectorAll('.theme-card').forEach(c => c.classList.toggle('selected', c.dataset.theme === p.theme));
   document.querySelectorAll('#animInGrid .anim-btn').forEach(c => c.classList.toggle('sel-in', c.dataset.anim === p.animIn));
   document.querySelectorAll('#animOutGrid .anim-btn').forEach(c => c.classList.toggle('sel-out', c.dataset.anim === p.animOut));
@@ -505,7 +576,7 @@ function loadPreset(p) {
   toast(`⚡ Preset "${p.title}" dimuat`);
 }
 
-// ─── STYLE ───
+// ── STYLE ──
 function selTheme(el) {
   document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -531,8 +602,8 @@ function selAnimOut(el) {
   el.classList.add('sel-out'); st.animOut = el.dataset.anim;
 }
 function applyStyle() {
-  socket.emit('update', { theme: st.theme, animIn: st.animIn, animOut: st.animOut });
-  toast('✓ Style diterapkan');
+  socket.emit('update', { theme: st.theme, animIn: st.animIn, animOut: st.animOut, data: { accent: st.data.accent } });
+  toast('✓ Style diterapkan ke OBS', 'green');
 }
 function previewLogo() {
   const url = document.getElementById('inLogo').value;
@@ -541,22 +612,23 @@ function previewLogo() {
   else img.style.display = 'none';
 }
 
-// ─── TOOLS ───
+// ── TOOLS ──
 function toggleAH() {
-  const on = document.getElementById('ahEnabled').checked;
-  document.getElementById('ahPanel').style.display = on ? 'block' : 'none';
+  document.getElementById('ahPanel').style.display = document.getElementById('ahEnabled').checked ? 'block' : 'none';
 }
 function ahSlide(el) {
   document.getElementById('ahValLabel').textContent = el.value;
+  document.getElementById('ahValRight').textContent = el.value + 's';
 }
 function cdSlide(el) {
   document.getElementById('cdDisplay').textContent = el.value;
+  document.getElementById('cdValRight').textContent = el.value + 's';
 }
 function startCountdown() {
   const p = collectData();
   socket.emit('countdown:start', p);
-  setLive(false); // will go live after countdown
-  toast(`⏱️ Countdown ${p.data.countdown}s dimulai!`);
+  vibrate([40,30,40]);
+  toast(`⏱️ Countdown ${p.data.countdown}s dimulai!`, 'green');
 }
 function stopCountdown() {
   socket.emit('countdown:stop');
@@ -569,30 +641,38 @@ function toggleTicker() {
 function sendTicker() {
   const text = document.getElementById('tickerText').value;
   socket.emit('ticker', text);
-  toast(text ? '📰 Ticker dikirim' : 'Ticker dimatikan');
+  toast(text ? '📰 Ticker dikirim ke overlay' : 'Ticker dimatikan');
 }
 
-// ─── PREVIEW ───
+// ── PREVIEW ──
 function updatePreview() {
   document.getElementById('prevTitle').textContent = document.getElementById('inTitle').value || 'Nama / Judul';
   document.getElementById('prevSub').textContent = document.getElementById('inSubtitle').value || 'Jabatan / Keterangan';
-  document.getElementById('prevAccent').style.background = st.data.accent || '#e63946';
 }
 
-// ─── TABS ───
+// ── TABS ──
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+  window.scrollTo(0, 0);
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-// ─── TOAST ───
-function toast(msg) {
+// ── TOAST ──
+function toast(msg, type) {
+  const wrap = document.getElementById('toastWrap');
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.12);backdrop-filter:blur(10px);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;border:1px solid rgba(255,255,255,.15)';
+  t.className = 'toast';
+  if (type === 'green') t.style.borderColor = 'rgba(46,196,182,.4)';
+  if (type === 'yellow') t.style.borderColor = 'rgba(245,166,35,.4)';
   t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
+  wrap.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 2200);
+}
+
+// ── VIBRATE ──
+function vibrate(pattern) {
+  try { navigator.vibrate && navigator.vibrate(pattern); } catch(e){}
 }
 
 updatePreview();
